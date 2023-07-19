@@ -1,11 +1,6 @@
 import { gsap } from 'gsap';
-import { Star } from './nightSkyBackground';
-
-const getCanvasContext = (currentCanvas: HTMLCanvasElement) => {
-  currentCanvas.width = window.innerWidth
-  currentCanvas.height = window.innerHeight
-  return currentCanvas.getContext('2d');
-}
+import { Dot, Star } from './nightSkyBackground';
+import { v4 as uuidv4 } from 'uuid';
 
 const setCanvas = (canvasContext: CanvasRenderingContext2D) => {
   canvasContext.fillStyle = 'yellow'
@@ -28,21 +23,45 @@ const createStars = (currentCanvas: HTMLCanvasElement, densityRatio = 0.5, sizeL
     currentCanvas.height = window.innerHeight
     
     return new Array(STAR_COUNT).fill(0).map(() => ({
+        id: uuidv4(),
         x: gsap.utils.random(0, window.innerWidth, 1),
         y: gsap.utils.random(0, window.innerHeight, 1),
         size: gsap.utils.random(1, sizeLimit, 1),
-        radius: Math.floor(Math.random()*2) + 1,
-        color: `rgba(255,255,255, ${alpha})`
+        radius: Math.floor(Math.random() * 1) + 1,
+        color: `rgba(255,255,255, ${alpha})`,
       }))
 }
 
-const drawStar = (star: Star, context: CanvasRenderingContext2D) => {
-    context.fillStyle = star.color;
-    context.shadowBlur = star.radius * 2;
-    context.beginPath()
-    context.arc(star.x, star.y, star.radius, 0, Math.PI * 2, false)
-    context.closePath();
-    context.fill()
+const drawStar = (star: Star | Dot, context: CanvasRenderingContext2D) => {
+  context.fillStyle = star.color;
+  context.shadowBlur = star.radius * 2;
+  context.beginPath()
+  context.arc(star.x, star.y, star.radius, 0, Math.PI * 2, false)
+  context.closePath();
+  context.fill()
+}
+
+const createDot = (currentCanvas: HTMLCanvasElement, context: CanvasRenderingContext2D, star: Star) => {
+    const id = uuidv4();
+    const alpha = .3;
+
+    const dot = {
+      id: id,
+      x: star.x,
+      y: star.y,
+      radius: Math.floor(Math.random()*3)+1,
+      maxLinks: 2,
+      speed: .5,
+      alpha: alpha,
+      alphaReduction: .005,
+      color: `rgba(255,255,255, ${alpha})`,
+      linkColor: `rgba(255,255,255, ${alpha / 4})`,
+      dir: Math.floor(Math.random()*140)+200
+    }
+
+    drawStar(dot, context);
+
+    return dot;
 }
 
 const drawStars = (currentCanvas: HTMLCanvasElement, context: CanvasRenderingContext2D, stars: Star[]) => {
@@ -58,4 +77,4 @@ const drawStars = (currentCanvas: HTMLCanvasElement, context: CanvasRenderingCon
   const moveStars = () => {
 
   }
-  export { createStars, drawStars, moveStars, setCanvas, getCanvasContext };
+  export { createStars, createDot, drawStars, moveStars, setCanvas };
