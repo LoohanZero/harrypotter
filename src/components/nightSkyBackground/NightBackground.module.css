@@ -1,0 +1,8 @@
+canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    min-height: 100vh;
+    min-width: 100vw;
+    cursor: auto;
+  }
