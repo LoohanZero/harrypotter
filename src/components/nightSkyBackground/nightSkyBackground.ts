@@ -1,4 +1,5 @@
 interface Star {
+    id: number,
     x: number,
     y: number,
     size?: number,
@@ -7,11 +8,13 @@ interface Star {
 }
 
 interface Dot extends Star {
-    maxLinks: number,
+    maxLinks?: number,
 	speed: number,
     alpha: number,
 	alphaReduction: number,
-	linkColor: string,
+	linkColor?: string,
     dir: number
 }
+
+
 export type { Star, Dot };
